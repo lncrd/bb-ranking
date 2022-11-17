@@ -1,7 +1,8 @@
-from typing import Any, List, Tuple
+import os
+import sqlite3
+from typing import List, Tuple
 
 from flask import Flask, render_template, request, redirect, url_for, flash
-import sqlite3
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from utils import SQLITE_DB_PATH
@@ -10,7 +11,7 @@ app = Flask(__name__)
 app.wsgi_app = ProxyFix(
     app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1
 )
-app.secret_key = 'foobar1234'
+app.secret_key = os.urandom(12).hex()
 
 
 def get_select_query_result(sql_statement: str) -> List[Tuple]:
