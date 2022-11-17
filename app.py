@@ -7,6 +7,10 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from utils import SQLITE_DB_PATH
 
 app = Flask(__name__)
+app.wsgi_app = ProxyFix(
+    app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1
+)
+app.secret_key = 'foobar1234'
 
 
 def get_select_query_result(sql_statement: str) -> List[Tuple]:
@@ -73,8 +77,4 @@ def _validate_solo_game_parameters(player1, player2, player1_score, player2_scor
 
 
 if __name__ == '__main__':
-    app.wsgi_app = ProxyFix(
-        app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1
-    )
-    app.secret_key = 'foobar1234'
     app.run(debug=True)
