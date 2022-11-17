@@ -203,7 +203,7 @@ def _validate_team_game_parameters(
     blue_score: int,
     red_score: int,
 ):
-    assert red_team[0] != red_team[1] != blue_team[0] != blue_team[1], "Players need to be distinct"
+    assert len(set(red_team + blue_team)) == 4, "Players need to be distinct"
     assert blue_score != red_score, "Ties are not allowed"
 
 
