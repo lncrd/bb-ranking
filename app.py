@@ -1,10 +1,11 @@
 import os
+from typing import Tuple
 
 from flask import Flask, render_template, request, redirect, url_for, flash
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 import ranking
-from db_query import get_select_query_result, run_insert_query
+from db_query import get_select_query_result, run_insert_query, fetch_one_query_result
 
 app = Flask(__name__)
 app.wsgi_app = ProxyFix(
@@ -59,6 +60,13 @@ def add_player():
     if request.method == 'POST':
         name = request.form['name']
         run_insert_query("INSERT INTO players(name) VALUES (?)", (name,))
+        player_id = fetch_one_query_result("SELECT id FROM players WHERE name=?", (name,))
+        rating = ranking.get_initial_rating()
+        print(player_id[0])
+        print(rating.mu)
+        print(rating.sigma)
+        run_insert_query("INSERT INTO solo_ranking(player_id, mu, sigma) VALUES (?, ?, ?)", (player_id[0], rating.mu, 8.3))
+        run_insert_query("INSERT INTO team_ranking(player_id, mu, sigma) VALUES (?, ?, ?)", (player_id[0], rating.mu, 8.3))
         flash('User Added', 'success')
         return redirect(url_for("index"))
     return render_template("add_player.html")
@@ -121,45 +129,49 @@ def register_team_game():
 
 
 def add_team_game_result(request):
-    blue_player1 = int(request.form['blue_player1'])
-    blue_player2 = int(request.form['blue_player2'])
-    red_player1 = int(request.form['red_player1'])
-    red_player2 = int(request.form['red_player2'])
+    blue_team = (int(request.form['blue_player1']), int(request.form['blue_player2']))
+    red_team = (int(request.form['red_player1']), int(request.form['red_player2']))
     blue_score = int(request.form['blue_score'])
     red_score = int(request.form['red_score'])
     went_under = "went_under" in request.form and request.form['went_under'] == "on"
 
     _validate_team_game_parameters(
-        blue_player1,
-        blue_player2,
-        red_player1,
-        red_player2,
+        red_team,
+        blue_team,
         blue_score,
         red_score,
     )
 
-    winner = blue if blue_score > red_score else red
-    loser = blue if winner == red else red
+    winner = blue_team if blue_score > red_score else red_team
+    loser = blue_team if winner == red_team else red_team
 
-    ranking.update_solo_ranking(winner, loser)
+    ranking.update_team_ranking(winner, loser)
 
     run_insert_query(
-        """INSERT INTO solo_game(player1, player2, player1_score, player2_score, went_under) VALUES (?,?,?,?,?)""",
-        (blue, red, blue_score, red_score, went_under)
+        """
+        INSERT INTO team_game(
+            blue_player1,
+            blue_player2,
+            red_player1,
+            red_player2,
+            blue_score,
+            red_score,
+            went_under
+        ) VALUES (?,?,?,?,?,?,?)
+        """,
+        (blue_team[0], blue_team[1], red_team[0], red_team[1], blue_score, red_score, went_under)
     )
     flash('Game Added', 'success')
     return redirect(url_for("index"))
 
 
 def _validate_team_game_parameters(
-    blue_player1: int,
-    blue_player2: int,
-    red_player1: int,
-    red_player2: int,
+    red_team: Tuple[int, int],
+    blue_team: Tuple[int, int],
     blue_score: int,
     red_score: int,
 ):
-    assert blue_player1 != blue_player2 != red_player1 != red_player2, "Players need to be distinct"
+    assert red_team[0] != red_team[1] != blue_team[0] != blue_team[1], "Players need to be distinct"
     assert blue_score != red_score, "Ties are not allowed"
 
 

@@ -26,3 +26,11 @@ def run_insert_query(sql_statement: str, params: Tuple = ()) -> None:
     cur = con.cursor()
     cur.execute(sql_statement, params)
     con.commit()
+
+
+def run_many_insert_query(sql_statement: str, params: List[Tuple] = ()) -> None:
+    con = sqlite3.connect(SQLITE_DB_PATH)
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+    cur.executemany(sql_statement, params)
+    con.commit()
