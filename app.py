@@ -81,8 +81,8 @@ def add_solo_game_result(request):
 
     _validate_solo_game_parameters(blue, red, blue_score, red_score)
 
-    winner = player1 if player1_score > player2_score else player2
-    loser = player1 if winner == player2 else player2
+    winner = blue if blue_score > red_score else red
+    loser = blue if winner == red else red
 
     ranking.update_solo_ranking(winner, loser)
 
@@ -96,6 +96,59 @@ def add_solo_game_result(request):
 
 def _validate_solo_game_parameters(blue, red, blue_score, red_score):
     assert blue != red, "You can't play against yourself dumbass"
+    assert blue_score != red_score, "Ties are not allowed"
+
+
+# @app.route("/register_team_game", methods=['GET', 'POST'])
+# def register_team_game():
+#     if request.method == 'POST':
+#         print(f"GOT {request.form}")
+#         return add_team_game_result(request)
+#
+#     player_list = get_select_query_result("SELECT id, name FROM players")
+#     return render_template("register_team_game.html", player_list=player_list)
+
+
+# def add_team_game_result(request):
+#     blue_player1 = int(request.form['blue_player1'])
+#     blue_player2 = int(request.form['blue_player2'])
+#     red_player1 = int(request.form['red_player1'])
+#     red_player2 = int(request.form['red_player2'])
+#     blue_score = int(request.form['blue_score'])
+#     red_score = int(request.form['red_score'])
+#     went_under = "went_under" in request.form and request.form['went_under'] == "on"
+#
+#     _validate_team_game_parameters(
+#         blue_player1,
+#         blue_player2,
+#         red_player1,
+#         red_player2,
+#         blue_score,
+#         red_score,
+#     )
+#
+#     winner = blue if blue_score > red_score else red
+#     loser = blue if winner == red else red
+#
+#     ranking.update_solo_ranking(winner, loser)
+#
+#     run_insert_query(
+#         """INSERT INTO solo_game(player1, player2, player1_score, player2_score, went_under) VALUES (?,?,?,?,?)""",
+#         (blue, red, blue_score, red_score, went_under)
+#     )
+#     flash('Game Added', 'success')
+#     return redirect(url_for("index"))
+
+
+def _validate_team_game_parameters(
+    blue_player1: int,
+    blue_player2: int,
+    red_player1: int,
+    red_player2: int,
+    blue_score: int,
+    red_score: int,
+):
+    assert blue_player1 != blue_player2 != red_player1 != red_player2, "Players need to be distinct"
     assert blue_score != red_score, "Ties are not allowed"
 
 

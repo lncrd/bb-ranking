@@ -1,0 +1,57 @@
+{% extends 'layout.html' %}
+{% block body %}
+<div class='row'>
+    <div class='col-5 mx-auto'>
+        <h3>Register Team Game</h3><hr>
+        <form method='post' action='{{url_for("register_team_game")}}'>
+            <div class='form-group'>
+                <div>
+                    <label>Red</label>
+                    <select name='red_player1' required class='form-control'>
+                        {% for player in player_list %}
+                        <option value={{player.id}}>{{player.name}}</option>
+                        {%endfor%}
+                    </select>
+                    <select name='red_player2' required class='form-control'>
+                        {% for player in player_list %}
+                        <option value={{player.id}}>{{player.name}}</option>
+                        {%endfor%}
+                    </select>
+                    <label>Score</label>
+                    <select name='red_score' required class='form-control'>
+                        {% for i in range(11) %}
+                        <option value={{i}}>{{i}}</option>
+                        {%endfor%}
+                    </select>
+                </div>
+                <br>
+                <div>
+                    <label>Blue</label>
+                    <select name='blue_player1' required class='form-control'>
+                        {% for player in player_list %}
+                        <option value={{player.id}}>{{player.name}}</option>
+                        {%endfor%}
+                    </select>
+                    <select name='blue_player2' required class='form-control'>
+                        {% for player in player_list %}
+                        <option value={{player.id}}>{{player.name}}</option>
+                        {%endfor%}
+                    </select>
+                    <label>Score</label>
+                    <select name='blue_score' required class='form-control'>
+                        {% for i in range(11) %}
+                        <option value={{i}}>{{i}}</option>
+                        {%endfor%}
+                    </select>
+                </div>
+                <div>
+                    <br>
+                    <input type="checkbox" id="went_under" name="went_under" >
+                    <label for="went_under">Losers went under the table</label>
+                </div>
+            </div>
+            <input type="submit" value="Register Game">
+        </form>
+    </div>
+</div>
+{% endblock %}
