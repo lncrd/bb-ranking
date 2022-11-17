@@ -4,17 +4,52 @@
 <p class='text-right'><a href='{{url_for("add_player")}}' class='btn btn-success '>Add Player</a></p>
 <p class='text-right'><a href='{{url_for("register_solo_game")}}' class='btn btn-success '>Register Solo Game</a></p>
 <table class='table table-bordered'>
+    <caption>Solo Ranking</caption>
     <thead>
     <th>Rank</th>
-    <th>Solo Elo</th>
+    <th>Elo</th>
     <th>Name</th>
     </thead>
     <tbody>
-    {% for row in player_elo_list %}
+    {% for row in player_solo_elo_list %}
     <tr>
         <td>{{loop.index}}</td>
         <td>{{row.solo_elo}}</td>
         <td>{{row.name}}</td>
+    </tr>
+    {%endfor%}
+    </tbody>
+</table>
+
+<table class='table table-bordered'>
+    <caption>Team Ranking</caption>
+    <thead>
+    <th>Rank</th>
+    <th>Elo</th>
+    <th>Name</th>
+    </thead>
+    <tbody>
+    {% for row in player_team_elo_list %}
+    <tr>
+        <td>{{loop.index}}</td>
+        <td>{{row.team_elo}}</td>
+        <td>{{row.name}}</td>
+    </tr>
+    {%endfor%}
+    </tbody>
+</table>
+
+<table class='table table-bordered'>
+    <caption>Player List</caption>
+    <thead>
+    <th>Name</th>
+    <th>Sucks at game ?</th>
+    </thead>
+    <tbody>
+    {% for row in player_list %}
+    <tr>
+        <td>{{row.name}}</td>
+        <td>{{row.name.lower() == "nadir"}}</td>
     </tr>
     {%endfor%}
     </tbody>

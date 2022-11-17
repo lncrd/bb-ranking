@@ -33,12 +33,30 @@ players = Table(
     "players",
     [
         Column("id", "INTEGER PRIMARY KEY AUTOINCREMENT"),
-        Column("name", "TEXT NOT NULL"),
+        Column("name", "TEXT UNIQUE NOT NULL"),
         Column("updated_timestamp", "DATETIME DEFAULT CURRENT_TIMESTAMP"),
         Column("created_timestamp", "DATETIME DEFAULT CURRENT_TIMESTAMP"),
-        Column("solo_elo", "INTEGER DEFAULT 0 NOT NULL"),
-        Column("team_elo", "INTEGER DEFAULT 0 NOT NULL"),
     ]
+)
+
+solo_ranking = Table(
+    "solo_ranking",
+    [
+        Column("player_id", "INTEGER PRIMARY KEY"),
+        Column("mu", "REAL NOT NULL"),
+        Column("sigma", "REAL NOT NULL")
+    ],
+    ["FOREIGN KEY(player_id) REFERENCES players(id)"]
+)
+
+team_ranking = Table(
+    "team_ranking",
+    [
+        Column("player_id", "INTEGER PRIMARY KEY"),
+        Column("mu", "REAL NOT NULL"),
+        Column("sigma", "REAL NOT NULL")
+    ],
+    ["FOREIGN KEY(player_id) REFERENCES players(id)"]
 )
 
 solo_game = Table(
@@ -81,7 +99,7 @@ team_game = Table(
     ]
 )
 
-tables = [players, solo_game, team_game]
+tables = [players, solo_ranking, team_ranking, solo_game, team_game]
 
 
 def init_db(reset=False) -> None:

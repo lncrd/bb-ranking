@@ -1,37 +1,58 @@
-from typing import Any, List, Tuple
-
 from flask import Flask, render_template, request, redirect, url_for, flash
 import sqlite3
 from werkzeug.middleware.proxy_fix import ProxyFix
 
+import ranking
+from db_query import get_select_query_result, run_insert_query
 from utils import SQLITE_DB_PATH
 
 app = Flask(__name__)
 
 
-def get_select_query_result(sql_statement: str) -> List[Tuple]:
-    con = sqlite3.connect(SQLITE_DB_PATH)
-    con.row_factory = sqlite3.Row
-    cur = con.cursor()
-    cur.execute(sql_statement)
-    return cur.fetchall()
-
-
 @app.route("/")
 @app.route("/index")
 def index():
-    player_elo_list = get_select_query_result("SELECT name, solo_elo FROM players ORDER BY solo_elo DESC")
-    return render_template("index.html", player_elo_list=player_elo_list)
+    player_solo_elo_list = get_select_query_result(
+        """
+        SELECT p.name as name, s.mu as solo_elo
+        FROM players p
+        JOIN solo_ranking s
+        ON s.player_id = p.id
+        ORDER BY solo_elo DESC
+        """
+    )
+
+    player_team_elo_list = get_select_query_result(
+        """
+        SELECT p.name as name, t.mu as team_elo
+        FROM players p
+        JOIN team_ranking t
+        ON t.player_id = p.id
+        ORDER BY team_elo DESC
+        """
+    )
+
+    player_list = get_select_query_result(
+        """
+        SELECT name
+        FROM players
+        ORDER BY name ASC
+        """
+    )
+
+    return render_template(
+        "index.html",
+        player_solo_elo_list=player_solo_elo_list,
+        player_team_elo_list=player_team_elo_list,
+        player_list=player_list
+    )
 
 
 @app.route("/add_player", methods=['GET', 'POST'])
 def add_player():
     if request.method == 'POST':
         name = request.form['name']
-        con = sqlite3.connect(SQLITE_DB_PATH)
-        cur = con.cursor()
-        cur.execute("INSERT INTO players(name) VALUES (?)", (name,))
-        con.commit()
+        run_insert_query("INSERT INTO players(name) VALUES (?)", (name,))
         flash('User Added', 'success')
         return redirect(url_for("index"))
     return render_template("add_player.html")
@@ -56,13 +77,15 @@ def add_solo_game_result(request):
 
     _validate_solo_game_parameters(player1, player2, player1_score, player2_score)
 
-    con = sqlite3.connect(SQLITE_DB_PATH)
-    cur = con.cursor()
-    cur.execute(
+    winner = player1 if player1_score > player2_score else player2
+    loser = player1 if winner == player2 else player2
+
+    ranking.update_solo_ranking(winner, loser)
+
+    run_insert_query(
         """INSERT INTO solo_game(player1, player2, player1_score, player2_score, went_under) VALUES (?,?,?,?,?)""",
         (player1, player2, player1_score, player2_score, went_under,)
     )
-    con.commit()
     flash('Game Added', 'success')
     return redirect(url_for("index"))
 
