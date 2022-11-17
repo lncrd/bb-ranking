@@ -47,11 +47,43 @@ def index():
         """
     )
 
+    recent_solo_games = get_select_query_result(
+        """
+        SELECT p_blue.name as blue_name, p_red.name as red_name, blue_score, red_score, sg.created_timestamp 
+        FROM solo_game sg
+        JOIN players p_blue
+        ON sg.blue = p_blue.id
+        JOIN players p_red
+        ON sg.red = p_red.id
+        ORDER BY sg.created_timestamp DESC
+        LIMIT 5
+        """
+    )
+
+    recent_team_games = get_select_query_result(
+        """
+        SELECT p_blue1.name + p_blue2.name as blue_names, p_red1.name + p_red2.name as blue_names, blue_score, red_score, tg.created_timestamp 
+        FROM team_game tg
+        JOIN players p_blue1
+        ON tg.blue_player1 = p_blue1.id
+        JOIN players p_blue2
+        ON tg.blue_player2 = p_blue2.id
+        JOIN players p_red1
+        ON tg.red_player1 = p_red1.id
+        JOIN players p_red2
+        ON tg.red_player2 = p_red2.id
+        ORDER BY tg.created_timestamp DESC
+        LIMIT 5
+        """
+    )
+
     return render_template(
         "index.html",
         player_solo_elo_list=player_solo_elo_list,
         player_team_elo_list=player_team_elo_list,
-        player_list=player_list
+        player_list=player_list,
+        recent_solo_games=recent_solo_games,
+        recent_team_games=recent_team_games,
     )
 
 
