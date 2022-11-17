@@ -29,7 +29,7 @@ def add_player():
     name = request.form['name']
     con = sqlite3.connect(SQLITE_DB_PATH)
     cur = con.cursor()
-    cur.execute("insert into players(name) values (?)", name)
+    cur.execute("INSERT INTO players(name) VALUES (?)", name)
     con.commit()
 
 
