@@ -1,12 +1,16 @@
+import os
+
 from flask import Flask, render_template, request, redirect, url_for, flash
-import sqlite3
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 import ranking
 from db_query import get_select_query_result, run_insert_query
-from utils import SQLITE_DB_PATH
 
 app = Flask(__name__)
+app.wsgi_app = ProxyFix(
+    app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1
+)
+app.secret_key = os.urandom(12).hex()
 
 
 @app.route("/")
@@ -69,13 +73,13 @@ def register_solo_game():
 
 
 def add_solo_game_result(request):
-    player1 = int(request.form['player1'])
-    player2 = int(request.form['player2'])
-    player1_score = int(request.form['player1_score'])
-    player2_score = int(request.form['player2_score'])
+    blue = int(request.form['blue'])
+    red = int(request.form['red'])
+    blue_score = int(request.form['blue_score'])
+    red_score = int(request.form['red_score'])
     went_under = "went_under" in request.form and request.form['went_under'] == "on"
 
-    _validate_solo_game_parameters(player1, player2, player1_score, player2_score)
+    _validate_solo_game_parameters(blue, red, blue_score, red_score)
 
     winner = player1 if player1_score > player2_score else player2
     loser = player1 if winner == player2 else player2
@@ -84,20 +88,16 @@ def add_solo_game_result(request):
 
     run_insert_query(
         """INSERT INTO solo_game(player1, player2, player1_score, player2_score, went_under) VALUES (?,?,?,?,?)""",
-        (player1, player2, player1_score, player2_score, went_under,)
+        (blue, red, blue_score, red_score, went_under)
     )
     flash('Game Added', 'success')
     return redirect(url_for("index"))
 
 
-def _validate_solo_game_parameters(player1, player2, player1_score, player2_score):
-    assert player1 != player2, "You can't play against yourself dumbass"
-    assert player1_score != player2_score, "Ties are not allowed"
+def _validate_solo_game_parameters(blue, red, blue_score, red_score):
+    assert blue != red, "You can't play against yourself dumbass"
+    assert blue_score != red_score, "Ties are not allowed"
 
 
 if __name__ == '__main__':
-    app.wsgi_app = ProxyFix(
-        app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1
-    )
-    app.secret_key = 'foobar1234'
     app.run(debug=True)
