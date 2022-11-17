@@ -6,14 +6,14 @@
         <form method='post' action='{{url_for("register_solo_game")}}'>
             <div class='form-group'>
                 <div>
-                    <label>Player 1</label>
-                    <select name='player1' required class='form-control'>
+                    <label>Blue</label>
+                    <select name='blue' required class='form-control'>
                         {% for player in player_list %}
                         <option value={{player.id}}>{{player.name}}</option>
                         {%endfor%}
                     </select>
                     <label>Score</label>
-                    <select name='player1_score' required class='form-control'>
+                    <select name='blue_score' required class='form-control'>
                         {% for i in range(11) %}
                         <option value={{i}}>{{i}}</option>
                         {%endfor%}
@@ -21,14 +21,14 @@
                 </div>
                 <br>
                 <div>
-                    <label>Player 2</label>
-                    <select name='player2' required class='form-control'>
+                    <label>Red</label>
+                    <select name='red' required class='form-control'>
                         {% for player in player_list %}
                         <option value={{player.id}}>{{player.name}}</option>
                         {%endfor%}
                     </select>
                     <label>Score</label>
-                    <select name='player2_score' required class='form-control'>
+                    <select name='red_score' required class='form-control'>
                         {% for i in range(11) %}
                         <option value={{i}}>{{i}}</option>
                         {%endfor%}

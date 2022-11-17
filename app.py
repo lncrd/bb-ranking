@@ -79,7 +79,8 @@ def add_solo_game_result(request):
     red_score = int(request.form['red_score'])
     went_under = "went_under" in request.form and request.form['went_under'] == "on"
 
-    _validate_solo_game_parameters(blue, red, blue_score, red_score)
+    if not _validate_solo_game_parameters(blue, red, blue_score, red_score):
+        return redirect(request.url)
 
     winner = blue if blue_score > red_score else red
     loser = blue if winner == red else red
@@ -87,7 +88,7 @@ def add_solo_game_result(request):
     ranking.update_solo_ranking(winner, loser)
 
     run_insert_query(
-        """INSERT INTO solo_game(player1, player2, player1_score, player2_score, went_under) VALUES (?,?,?,?,?)""",
+        """INSERT INTO solo_game(blue, red, blue_score, red_score, went_under) VALUES (?,?,?,?,?)""",
         (blue, red, blue_score, red_score, went_under)
     )
     flash('Game Added', 'success')
@@ -95,8 +96,16 @@ def add_solo_game_result(request):
 
 
 def _validate_solo_game_parameters(blue, red, blue_score, red_score):
-    assert blue != red, "You can't play against yourself dumbass"
-    assert blue_score != red_score, "Ties are not allowed"
+    """
+    Return True if game is valid
+    """
+    if blue == red:
+        flash("You can't play against yourself, dumbass")
+        return False
+    if blue_score == red_score:
+        flash("Ties are not allowed, keep playing")
+        return False
+    return True
 
 
 # @app.route("/register_team_game", methods=['GET', 'POST'])
