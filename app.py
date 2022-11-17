@@ -53,28 +53,28 @@ def register_solo_game():
 
 
 def add_solo_game_result(request):
-    player1 = int(request.form['player1'])
-    player2 = int(request.form['player2'])
-    player1_score = int(request.form['player1_score'])
-    player2_score = int(request.form['player2_score'])
+    blue = int(request.form['blue'])
+    red = int(request.form['red'])
+    blue_score = int(request.form['blue_score'])
+    red_score = int(request.form['red_score'])
     went_under = "went_under" in request.form and request.form['went_under'] == "on"
 
-    _validate_solo_game_parameters(player1, player2, player1_score, player2_score)
+    _validate_solo_game_parameters(blue, red, blue_score, red_score)
 
     con = sqlite3.connect(SQLITE_DB_PATH)
     cur = con.cursor()
     cur.execute(
         """INSERT INTO solo_game(player1, player2, player1_score, player2_score, went_under) VALUES (?,?,?,?,?)""",
-        (player1, player2, player1_score, player2_score, went_under,)
+        (blue, red, blue_score, red_score, went_under)
     )
     con.commit()
     flash('Game Added', 'success')
     return redirect(url_for("index"))
 
 
-def _validate_solo_game_parameters(player1, player2, player1_score, player2_score):
-    assert player1 != player2, "You can't play against yourself dumbass"
-    assert player1_score != player2_score, "Ties are not allowed"
+def _validate_solo_game_parameters(blue, red, blue_score, red_score):
+    assert blue != red, "You can't play against yourself dumbass"
+    assert blue_score != red_score, "Ties are not allowed"
 
 
 if __name__ == '__main__':
