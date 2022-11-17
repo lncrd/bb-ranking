@@ -1,7 +1,8 @@
 {% extends 'layout.html' %}
 {% block body %}
 <h3 class='text-center text-muted mb-3'>Flask - SQLite CRUD Application</h3>
-<p class='text-right'><a href='{{url_for("add_player")}}' class='btn btn-success '>+Add Player</a></p>
+<p class='text-right'><a href='{{url_for("add_player")}}' class='btn btn-success '>Add Player</a></p>
+<p class='text-right'><a href='{{url_for("register_solo_game")}}' class='btn btn-success '>Register Solo Game</a></p>
 <table class='table table-bordered'>
     <thead>
     <th>Rank</th>
@@ -9,7 +10,7 @@
     <th>Name</th>
     </thead>
     <tbody>
-    {% for row in datas %}
+    {% for row in player_elo_list %}
     <tr>
         <td>{{loop.index}}</td>
         <td>{{row.solo_elo}}</td>

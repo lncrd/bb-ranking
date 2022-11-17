@@ -1,0 +1,47 @@
+{% extends 'layout.html' %}
+{% block body %}
+<div class='row'>
+    <div class='col-5 mx-auto'>
+        <h3>Register Solo Game</h3><hr>
+        <form method='post' action='{{url_for("register_solo_game")}}'>
+            <div class='form-group'>
+                <div>
+                    <label>Player 1</label>
+                    <select name='player1' required class='form-control'>
+                        {% for player in player_list %}
+                        <option value={{player.id}}>{{player.name}}</option>
+                        {%endfor%}
+                    </select>
+                    <label>Score</label>
+                    <select name='player1_score' required class='form-control'>
+                        {% for i in range(11) %}
+                        <option value={{i}}>{{i}}</option>
+                        {%endfor%}
+                    </select>
+                </div>
+                <br>
+                <div>
+                    <label>Player 2</label>
+                    <select name='player2' required class='form-control'>
+                        {% for player in player_list %}
+                        <option value={{player.id}}>{{player.name}}</option>
+                        {%endfor%}
+                    </select>
+                    <label>Score</label>
+                    <select name='player2_score' required class='form-control'>
+                        {% for i in range(11) %}
+                        <option value={{i}}>{{i}}</option>
+                        {%endfor%}
+                    </select>
+                </div>
+                <div>
+                    <br>
+                    <input type="checkbox" id="went_under" name="went_under" >
+                    <label for="went_under">Loser went under the table</label>
+                </div>
+            </div>
+            <input type="submit" value="Register Game">
+        </form>
+    </div>
+</div>
+{% endblock %}
