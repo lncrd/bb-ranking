@@ -49,32 +49,35 @@ solo_game = Table(
         Column("player2", "INTEGER NOT NULL"),
         Column("player1_score", "INTEGER NOT NULL"),
         Column("player2_score", "INTEGER NOT NULL"),
-        Column("updated_timestamp", "DATETIME DEFAULT CURRENT_TIMESTAMP"),
-        Column("created_timestamp", "DATETIME DEFAULT CURRENT_TIMESTAMP"),
-        Column("went_under", "BOOLEAN DEFAULT FALSE"),
+        Column("updated_timestamp", "DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL"),
+        Column("created_timestamp", "DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL"),
+        Column("went_under", "BOOLEAN DEFAULT FALSE NOT NULL"),
     ],
-    ["FOREIGN KEY(player1) REFERENCES players(id)", "FOREIGN KEY(player2) REFERENCES players(id)"]
+    [
+        "FOREIGN KEY(player1) REFERENCES players(id)",
+        "FOREIGN KEY(player2) REFERENCES players(id)"
+    ]
 )
 
 team_game = Table(
     "team_game",
     [
         Column("id", "INTEGER PRIMARY KEY AUTOINCREMENT"),
-        Column("team1_player_1", "INTEGER NOT NULL"),
-        Column("team1_player_2", "INTEGER NOT NULL"),
-        Column("team2_player_1", "INTEGER NOT NULL"),
-        Column("team2_player_2", "INTEGER NOT NULL"),
+        Column("team1_player1", "INTEGER NOT NULL"),
+        Column("team1_player2", "INTEGER NOT NULL"),
+        Column("team2_player1", "INTEGER NOT NULL"),
+        Column("team2_player2", "INTEGER NOT NULL"),
         Column("team1_score", "INTEGER NOT NULL"),
         Column("team2_score", "INTEGER NOT NULL"),
-        Column("updated_timestamp", "DATETIME DEFAULT CURRENT_TIMESTAMP"),
-        Column("created_timestamp", "DATETIME DEFAULT CURRENT_TIMESTAMP"),
-        Column("went_under", "BOOLEAN DEFAULT FALSE"),
+        Column("updated_timestamp", "DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL"),
+        Column("created_timestamp", "DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL"),
+        Column("went_under", "BOOLEAN DEFAULT FALSE NOT NULL"),
     ],
     [
-        "FOREIGN KEY(team1_player_1) REFERENCES players(id)",
-        "FOREIGN KEY(team1_player_2) REFERENCES players(id)",
-        "FOREIGN KEY(team2_player_1) REFERENCES players(id)",
-        "FOREIGN KEY(team2_player_2) REFERENCES players(id)"
+        "FOREIGN KEY(team1_player1) REFERENCES players(id)",
+        "FOREIGN KEY(team1_player2) REFERENCES players(id)",
+        "FOREIGN KEY(team2_player1) REFERENCES players(id)",
+        "FOREIGN KEY(team2_player2) REFERENCES players(id)"
     ]
 )
 

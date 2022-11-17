@@ -1,0 +1,14 @@
+{% extends 'layout.html' %}
+{% block body %}
+<div class='row'>
+    <div class='col-5 mx-auto'>
+        <h3>Add user</h3><hr>
+        <form method='post' action='{{url_for("add_player")}}'>
+            <div class='form-group'>
+                <label>User Name</label>
+                <input type='text' name='name' required class='form-control'>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
