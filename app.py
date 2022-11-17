@@ -23,6 +23,7 @@ def index():
         JOIN solo_ranking s
         ON s.player_id = p.id
         ORDER BY solo_elo DESC
+        LIMIT 10
         """
     )
 
@@ -33,6 +34,7 @@ def index():
         JOIN team_ranking t
         ON t.player_id = p.id
         ORDER BY team_elo DESC
+        LIMIT 10
         """
     )
 
@@ -108,45 +110,45 @@ def _validate_solo_game_parameters(blue, red, blue_score, red_score):
     return True
 
 
-# @app.route("/register_team_game", methods=['GET', 'POST'])
-# def register_team_game():
-#     if request.method == 'POST':
-#         print(f"GOT {request.form}")
-#         return add_team_game_result(request)
-#
-#     player_list = get_select_query_result("SELECT id, name FROM players")
-#     return render_template("register_team_game.html", player_list=player_list)
+@app.route("/register_team_game", methods=['GET', 'POST'])
+def register_team_game():
+    if request.method == 'POST':
+        print(f"GOT {request.form}")
+        return add_team_game_result(request)
+
+    player_list = get_select_query_result("SELECT id, name FROM players")
+    return render_template("register_team_game.html", player_list=player_list)
 
 
-# def add_team_game_result(request):
-#     blue_player1 = int(request.form['blue_player1'])
-#     blue_player2 = int(request.form['blue_player2'])
-#     red_player1 = int(request.form['red_player1'])
-#     red_player2 = int(request.form['red_player2'])
-#     blue_score = int(request.form['blue_score'])
-#     red_score = int(request.form['red_score'])
-#     went_under = "went_under" in request.form and request.form['went_under'] == "on"
-#
-#     _validate_team_game_parameters(
-#         blue_player1,
-#         blue_player2,
-#         red_player1,
-#         red_player2,
-#         blue_score,
-#         red_score,
-#     )
-#
-#     winner = blue if blue_score > red_score else red
-#     loser = blue if winner == red else red
-#
-#     ranking.update_solo_ranking(winner, loser)
-#
-#     run_insert_query(
-#         """INSERT INTO solo_game(player1, player2, player1_score, player2_score, went_under) VALUES (?,?,?,?,?)""",
-#         (blue, red, blue_score, red_score, went_under)
-#     )
-#     flash('Game Added', 'success')
-#     return redirect(url_for("index"))
+def add_team_game_result(request):
+    blue_player1 = int(request.form['blue_player1'])
+    blue_player2 = int(request.form['blue_player2'])
+    red_player1 = int(request.form['red_player1'])
+    red_player2 = int(request.form['red_player2'])
+    blue_score = int(request.form['blue_score'])
+    red_score = int(request.form['red_score'])
+    went_under = "went_under" in request.form and request.form['went_under'] == "on"
+
+    _validate_team_game_parameters(
+        blue_player1,
+        blue_player2,
+        red_player1,
+        red_player2,
+        blue_score,
+        red_score,
+    )
+
+    winner = blue if blue_score > red_score else red
+    loser = blue if winner == red else red
+
+    ranking.update_solo_ranking(winner, loser)
+
+    run_insert_query(
+        """INSERT INTO solo_game(player1, player2, player1_score, player2_score, went_under) VALUES (?,?,?,?,?)""",
+        (blue, red, blue_score, red_score, went_under)
+    )
+    flash('Game Added', 'success')
+    return redirect(url_for("index"))
 
 
 def _validate_team_game_parameters(
