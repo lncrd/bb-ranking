@@ -21,10 +21,18 @@ def index():
 
     player_solo_elo_list = get_select_query_result(
         """
-        SELECT p.name as name, s.mu as solo_elo
+        SELECT 
+            p.name AS name,
+            sr.mu AS solo_elo
         FROM players p
-        JOIN solo_ranking s
-        ON s.player_id = p.id
+        JOIN solo_ranking sr
+        ON sr.player_id = p.id
+        JOIN (
+            SELECT player_id, MAX(game_id) AS max_game_id
+            FROM solo_ranking
+            GROUP BY player_id
+        ) sr2
+        ON sr2.player_id = sr.player_id AND sr2.max_game_id = sr.game_id
         ORDER BY solo_elo DESC
         LIMIT 10
         """,
@@ -33,10 +41,18 @@ def index():
 
     player_team_elo_list = get_select_query_result(
         """
-        SELECT p.name as name, t.mu as team_elo
+        SELECT 
+            p.name AS name,
+            sr.mu AS team_elo
         FROM players p
-        JOIN team_ranking t
-        ON t.player_id = p.id
+        JOIN team_ranking sr
+        ON sr.player_id = p.id
+        JOIN (
+            SELECT player_id, MAX(game_id) AS max_game_id
+            FROM team_ranking
+            GROUP BY player_id
+        ) sr2
+        ON sr2.player_id = sr.player_id AND sr2.max_game_id = sr.game_id
         ORDER BY team_elo DESC
         LIMIT 10
         """,
