@@ -145,7 +145,7 @@ def add_player():
         run_insert_query("INSERT INTO players(name) VALUES (?)", (name,), cur=cur)
         con.commit()
         flash('User Added', 'success')
-        return redirect(url_for("index"))
+        return redirect(url_for("players"))
     return render_template("add_player.html")
 
 
@@ -196,7 +196,7 @@ def add_solo_game_result(request):
     con.commit()
 
     flash('Game Added', 'success')
-    return redirect(url_for("index"))
+    return redirect(url_for("solo_games"))
 
 
 def _validate_solo_game_parameters(game: SoloGame):
@@ -260,7 +260,7 @@ def add_team_game_result(request):
     con.commit()
 
     flash('Game Added', 'success')
-    return redirect(url_for("index"))
+    return redirect(url_for("team_games"))
 
 
 def _validate_team_game_parameters(game: TeamGame):
