@@ -42,21 +42,31 @@ players = Table(
 solo_ranking = Table(
     "solo_ranking",
     [
-        Column("player_id", "INTEGER PRIMARY KEY"),
+        Column("player_id", "INTEGER NOT NULL"),
         Column("mu", "REAL NOT NULL"),
-        Column("sigma", "REAL NOT NULL")
+        Column("sigma", "REAL NOT NULL"),
+        Column("game_id", "INTEGER NOT NULL")
     ],
-    ["FOREIGN KEY(player_id) REFERENCES players(id)"]
+    [
+        "FOREIGN KEY(player_id) REFERENCES players(id)",
+        "FOREIGN KEY(game_id) REFERENCES solo_game(id)",
+        "PRIMARY KEY (player_id, game_id)"
+    ]
 )
 
 team_ranking = Table(
     "team_ranking",
     [
-        Column("player_id", "INTEGER PRIMARY KEY"),
+        Column("player_id", "INTEGER NOT NULL"),
         Column("mu", "REAL NOT NULL"),
-        Column("sigma", "REAL NOT NULL")
+        Column("sigma", "REAL NOT NULL"),
+        Column("game_id", "INTEGER NOT NULL")
     ],
-    ["FOREIGN KEY(player_id) REFERENCES players(id)"]
+    [
+        "FOREIGN KEY(player_id) REFERENCES players(id)",
+        "FOREIGN KEY(game_id) REFERENCES team_game(id)",
+        "PRIMARY KEY (player_id, game_id)"
+    ]
 )
 
 solo_game = Table(
@@ -71,20 +81,17 @@ solo_game = Table(
         Column("created_timestamp", "DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL"),
         Column("went_under", "BOOLEAN DEFAULT FALSE NOT NULL"),
     ],
-    [
-        "FOREIGN KEY(blue) REFERENCES players(id)",
-        "FOREIGN KEY(red) REFERENCES players(id)"
-    ]
+    ["FOREIGN KEY(blue) REFERENCES players(id)", "FOREIGN KEY(red) REFERENCES players(id)"]
 )
 
 team_game = Table(
     "team_game",
     [
         Column("id", "INTEGER PRIMARY KEY AUTOINCREMENT"),
-        Column("blue_player1", "INTEGER NOT NULL"),
-        Column("blue_player2", "INTEGER NOT NULL"),
-        Column("red_player1", "INTEGER NOT NULL"),
-        Column("red_player2", "INTEGER NOT NULL"),
+        Column("blue_attacker", "INTEGER NOT NULL"),
+        Column("blue_defender", "INTEGER NOT NULL"),
+        Column("red_attacker", "INTEGER NOT NULL"),
+        Column("red_defender", "INTEGER NOT NULL"),
         Column("blue_score", "INTEGER NOT NULL"),
         Column("red_score", "INTEGER NOT NULL"),
         Column("updated_timestamp", "DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL"),
@@ -92,10 +99,10 @@ team_game = Table(
         Column("went_under", "BOOLEAN DEFAULT FALSE NOT NULL"),
     ],
     [
-        "FOREIGN KEY(blue_player1) REFERENCES players(id)",
-        "FOREIGN KEY(blue_player2) REFERENCES players(id)",
-        "FOREIGN KEY(red_player1) REFERENCES players(id)",
-        "FOREIGN KEY(red_player2) REFERENCES players(id)"
+        "FOREIGN KEY(blue_attacker) REFERENCES players(id)",
+        "FOREIGN KEY(blue_defender) REFERENCES players(id)",
+        "FOREIGN KEY(red_attacker) REFERENCES players(id)",
+        "FOREIGN KEY(red_defender) REFERENCES players(id)"
     ]
 )
 
@@ -103,7 +110,7 @@ tables = [players, solo_ranking, team_ranking, solo_game, team_game]
 
 
 def init_db(reset=False) -> None:
-    # connect to SQLite
+    # Connect to SQLite
     con = sql.connect(SQLITE_DB_PATH)
 
     # Create a Connection

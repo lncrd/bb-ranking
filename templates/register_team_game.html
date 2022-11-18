@@ -6,13 +6,13 @@
         <form method='post' action='{{url_for("register_team_game")}}'>
             <div class='form-group'>
                 <div>
-                    <label>Red</label>
-                    <select name='red_player1' required class='form-control'>
+                    <label>Red (Attacker / Defender)</label>
+                    <select name='red_attacker' required class='form-control'>
                         {% for player in player_list %}
                         <option value={{player.id}}>{{player.name}}</option>
                         {%endfor%}
                     </select>
-                    <select name='red_player2' required class='form-control'>
+                    <select name='red_defender' required class='form-control'>
                         {% for player in player_list %}
                         <option value={{player.id}}>{{player.name}}</option>
                         {%endfor%}
@@ -26,13 +26,13 @@
                 </div>
                 <br>
                 <div>
-                    <label>Blue</label>
-                    <select name='blue_player1' required class='form-control'>
+                    <label>Blue (Attacker / Defender)</label>
+                    <select name='blue_attacker' required class='form-control'>
                         {% for player in player_list %}
                         <option value={{player.id}}>{{player.name}}</option>
                         {%endfor%}
                     </select>
-                    <select name='blue_player2' required class='form-control'>
+                    <select name='blue_defender' required class='form-control'>
                         {% for player in player_list %}
                         <option value={{player.id}}>{{player.name}}</option>
                         {%endfor%}
