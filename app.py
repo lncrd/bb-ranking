@@ -59,6 +59,17 @@ def index():
         cur=cur
     )
 
+    return render_template(
+        "index.html",
+        player_solo_elo_list=player_solo_elo_list,
+        player_team_elo_list=player_team_elo_list,
+    )
+
+
+@app.route("/players")
+def players():
+    cur, _ = get_cursor_and_connection()
+
     player_list = get_select_query_result(
         """
         SELECT name
@@ -67,6 +78,16 @@ def index():
         """,
         cur=cur
     )
+
+    return render_template(
+        "players.html",
+        player_list=player_list,
+    )
+
+
+@app.route("/solo_games")
+def solo_games():
+    cur, _ = get_cursor_and_connection()
 
     recent_solo_games = get_select_query_result(
         """
@@ -77,10 +98,20 @@ def index():
         JOIN players p_red
         ON sg.red = p_red.id
         ORDER BY sg.created_timestamp DESC
-        LIMIT 5
+        LIMIT 100
         """,
         cur=cur
     )
+
+    return render_template(
+        "solo_games.html",
+        recent_solo_games=recent_solo_games,
+    )
+
+
+@app.route("/team_games")
+def team_games():
+    cur, _ = get_cursor_and_connection()
 
     recent_team_games = get_select_query_result(
         """
@@ -101,11 +132,7 @@ def index():
     )
 
     return render_template(
-        "index.html",
-        player_solo_elo_list=player_solo_elo_list,
-        player_team_elo_list=player_team_elo_list,
-        player_list=player_list,
-        recent_solo_games=recent_solo_games,
+        "team_games.html",
         recent_team_games=recent_team_games,
     )
 

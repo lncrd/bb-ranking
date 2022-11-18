@@ -1,0 +1,29 @@
+{% extends 'layout.html' %}
+{% block body %}
+<h1 class='text-center text-muted mb-3'>Team Games</h1>
+<p class='text-right'><a href='{{url_for("register_team_game")}}' class='btn btn-success '>Register Team Game</a></p>
+<table class='table table-bordered'>
+  <caption>Recent team games</caption>
+  <thead>
+  <th>Blue</th>
+  <th>Red</th>
+  <th>Score</th>
+  <th>Date</th>
+  </thead>
+  <tbody>
+  {% for row in recent_team_games %}
+  <tr>
+    {% if row.blue_score > row.red_score %}
+    <td style="color:green">{{row.blue_names}}</td>
+    <td style="color:red">{{row.red_names}}</td>
+    {% else %}
+    <td style="color:red">{{row.blue_names}}</td>
+    <td style="color:green">{{row.red_names}}</td>
+    {% endif %}
+    <td>{{row.blue_score}} - {{row.red_score}}</td>
+    <td>{{row.created_timestamp}}</td>
+  </tr>
+  {%endfor%}
+  </tbody>
+</table>
+{% endblock %}

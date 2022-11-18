@@ -1,0 +1,20 @@
+{% extends 'layout.html' %}
+{% block body %}
+<h1 class='text-center text-muted mb-3'>Players</h1>
+<p class='text-right'><a href='{{url_for("add_player")}}' class='btn btn-success '>Add Player</a></p>
+<table class='table table-bordered'>
+  <caption>Player List</caption>
+  <thead>
+  <th>Name</th>
+  <th>Sucks at game ?</th>
+  </thead>
+  <tbody>
+  {% for row in player_list %}
+  <tr>
+    <td>{{row.name}}</td>
+    <td>{{row.name.lower() == "nadir"}}</td>
+  </tr>
+  {%endfor%}
+  </tbody>
+</table>
+{% endblock %}

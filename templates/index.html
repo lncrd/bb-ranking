@@ -1,106 +1,40 @@
 {% extends 'layout.html' %}
 {% block body %}
-<h3 class='text-center text-muted mb-3'>DD Babyfoot Ranking</h3>
-<p class='text-right'><a href='{{url_for("add_player")}}' class='btn btn-success '>Add Player</a></p>
-<p class='text-right'><a href='{{url_for("register_solo_game")}}' class='btn btn-success '>Register Solo Game</a></p>
-<p class='text-right'><a href='{{url_for("register_team_game")}}' class='btn btn-success '>Register Team Game</a></p>
+<br>
+<br>
+<h2>Solo Ranking</h2>
 <table class='table table-bordered'>
-    <caption>Solo Ranking</caption>
     <thead>
     <th>Rank</th>
-    <th>Elo</th>
     <th>Name</th>
+    <th>Elo</th>
     </thead>
     <tbody>
     {% for row in player_solo_elo_list %}
     <tr>
         <td>{{loop.index}}</td>
-        <td>{{row.solo_elo}}</td>
         <td>{{row.name}}</td>
+        <td>{{row.solo_elo}}</td>
     </tr>
     {%endfor%}
     </tbody>
 </table>
 
+<br>
+<br>
+<h2>Team Ranking</h2>
 <table class='table table-bordered'>
-    <caption>Team Ranking</caption>
     <thead>
     <th>Rank</th>
-    <th>Elo</th>
     <th>Name</th>
+    <th>Elo</th>
     </thead>
     <tbody>
     {% for row in player_team_elo_list %}
     <tr>
         <td>{{loop.index}}</td>
+        <td>{{row.name}}</td>
         <td>{{row.team_elo}}</td>
-        <td>{{row.name}}</td>
-    </tr>
-    {%endfor%}
-    </tbody>
-</table>
-
-<table class='table table-bordered'>
-    <caption>Player List</caption>
-    <thead>
-    <th>Name</th>
-    <th>Sucks at game ?</th>
-    </thead>
-    <tbody>
-    {% for row in player_list %}
-    <tr>
-        <td>{{row.name}}</td>
-        <td>{{row.name.lower() == "nadir"}}</td>
-    </tr>
-    {%endfor%}
-    </tbody>
-</table>
-
-<table class='table table-bordered'>
-    <caption>Recent solo games</caption>
-    <thead>
-    <th>Blue</th>
-    <th>Red</th>
-    <th>Score</th>
-    <th>Date</th>
-    </thead>
-    <tbody>
-    {% for row in recent_solo_games %}
-    <tr>
-        {% if row.blue_score > row.red_score %}
-        <td style="color:green">{{row.blue_name}}</td>
-        <td style="color:red">{{row.red_name}}</td>
-        {% else %}
-        <td style="color:red">{{row.blue_name}}</td>
-        <td style="color:green">{{row.red_name}}</td>
-        {% endif %}
-        <td>{{row.blue_score}} - {{row.red_score}}</td>
-        <td>{{row.created_timestamp}}</td>
-    </tr>
-    {%endfor%}
-    </tbody>
-</table>
-
-<table class='table table-bordered'>
-    <caption>Recent team games</caption>
-    <thead>
-    <th>Blue</th>
-    <th>Red</th>
-    <th>Score</th>
-    <th>Date</th>
-    </thead>
-    <tbody>
-    {% for row in recent_team_games %}
-    <tr>
-        {% if row.blue_score > row.red_score %}
-        <td style="color:green">{{row.blue_names}}</td>
-        <td style="color:red">{{row.red_names}}</td>
-        {% else %}
-        <td style="color:red">{{row.blue_names}}</td>
-        <td style="color:green">{{row.red_names}}</td>
-        {% endif %}
-        <td>{{row.blue_score}} - {{row.red_score}}</td>
-        <td>{{row.created_timestamp}}</td>
     </tr>
     {%endfor%}
     </tbody>
