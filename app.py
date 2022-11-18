@@ -23,7 +23,7 @@ def index():
         """
         SELECT 
             p.name AS name,
-            sr.mu AS solo_elo
+            ROUND(sr.mu, 2) AS solo_elo
         FROM players p
         JOIN solo_ranking sr
         ON sr.player_id = p.id
@@ -43,7 +43,7 @@ def index():
         """
         SELECT 
             p.name AS name,
-            sr.mu AS team_elo
+            ROUND(sr.mu, 2) AS team_elo
         FROM players p
         JOIN team_ranking sr
         ON sr.player_id = p.id
