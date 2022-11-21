@@ -115,16 +115,19 @@ def team_games():
 
     recent_team_games = get_select_query_result(
         """
-        SELECT p_blue1.name + p_blue2.name as blue_names, p_red1.name + p_red2.name as blue_names, blue_score, red_score, tg.created_timestamp 
+        SELECT 
+         p_blue_attacker.name as blue_attacker_name, p_blue_defender.name as blue_defender_name,
+         p_red_attacker.name as red_attacker_name, p_red_defender.name as red_defender_name,
+         blue_score, red_score, tg.created_timestamp 
         FROM team_game tg
-        JOIN players p_blue1
-        ON tg.blue_attacker = p_blue1.id
-        JOIN players p_blue2
-        ON tg.blue_defender = p_blue2.id
-        JOIN players p_red1
-        ON tg.red_attacker = p_red1.id
-        JOIN players p_red2
-        ON tg.red_defender = p_red2.id
+        JOIN players p_blue_attacker
+        ON tg.blue_attacker = p_blue_attacker.id
+        JOIN players p_blue_defender
+        ON tg.blue_defender = p_blue_defender.id
+        JOIN players p_red_attacker
+        ON tg.red_attacker = p_red_attacker.id
+        JOIN players p_red_defender
+        ON tg.red_defender = p_red_defender.id
         ORDER BY tg.created_timestamp DESC
         LIMIT 5
         """,
