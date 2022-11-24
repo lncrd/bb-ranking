@@ -291,7 +291,7 @@ def delete_last_solo_game():
 
 
 @app.route("/delete_last_team_game")
-def delete_last_solo_game():
+def delete_last_team_game():
     cur, conn = get_cursor_and_connection()
     game_to_delete = fetch_one_query_result("SELECT id FROM team_game ORDER BY updated_timestamp DESC LIMIT 1", cur=cur)
     if game_to_delete:
