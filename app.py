@@ -98,7 +98,7 @@ def solo_games():
         JOIN players p_red
         ON sg.red = p_red.id
         ORDER BY sg.created_timestamp DESC
-        LIMIT 100
+        LIMIT 25
         """,
         cur=cur
     )
@@ -129,7 +129,7 @@ def team_games():
         JOIN players p_red_defender
         ON tg.red_defender = p_red_defender.id
         ORDER BY tg.created_timestamp DESC
-        LIMIT 5
+        LIMIT 25
         """,
         cur=cur
     )
