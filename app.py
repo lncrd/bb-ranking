@@ -279,28 +279,32 @@ def _validate_team_game_parameters(game: TeamGame):
 
 @app.route("/delete_last_solo_game")
 def delete_last_solo_game():
-    cur, conn = get_cursor_and_connection()
-    game_to_delete = fetch_one_query_result("SELECT id FROM solo_game ORDER BY updated_timestamp DESC LIMIT 1", cur=cur)
-    if game_to_delete:
-        game_id_to_delete = game_to_delete[0]
 
-        run_param_query("DELETE FROM solo_game WHERE id=?", (game_id_to_delete,), cur=cur)
-        run_param_query("DELETE FROM solo_ranking WHERE game_id=?", (game_id_to_delete,), cur=cur)
+    if request.method == 'DELETE':
+        cur, conn = get_cursor_and_connection()
+        game_to_delete = fetch_one_query_result("SELECT id FROM solo_game ORDER BY updated_timestamp DESC LIMIT 1", cur=cur)
+        if game_to_delete:
+            game_id_to_delete = game_to_delete[0]
 
-        conn.commit()
+            run_param_query("DELETE FROM solo_game WHERE id=?", (game_id_to_delete,), cur=cur)
+            run_param_query("DELETE FROM solo_ranking WHERE game_id=?", (game_id_to_delete,), cur=cur)
+
+            conn.commit()
 
 
 @app.route("/delete_last_team_game")
 def delete_last_team_game():
-    cur, conn = get_cursor_and_connection()
-    game_to_delete = fetch_one_query_result("SELECT id FROM team_game ORDER BY updated_timestamp DESC LIMIT 1", cur=cur)
-    if game_to_delete:
-        game_id_to_delete = game_to_delete[0]
 
-        run_param_query("DELETE FROM team_game WHERE id=?", (game_id_to_delete,), cur=cur)
-        run_param_query("DELETE FROM team_ranking WHERE game_id=?", (game_id_to_delete,), cur=cur)
+    if request.method == 'DELETE':
+        cur, conn = get_cursor_and_connection()
+        game_to_delete = fetch_one_query_result("SELECT id FROM team_game ORDER BY updated_timestamp DESC LIMIT 1", cur=cur)
+        if game_to_delete:
+            game_id_to_delete = game_to_delete[0]
 
-        conn.commit()
+            run_param_query("DELETE FROM team_game WHERE id=?", (game_id_to_delete,), cur=cur)
+            run_param_query("DELETE FROM team_ranking WHERE game_id=?", (game_id_to_delete,), cur=cur)
+
+            conn.commit()
 
 
 if __name__ == '__main__':
