@@ -13,8 +13,8 @@
     {% for row in player_solo_elo_list %}
     <tr>
         <td>{{loop.index}}</td>
-        <td>{{row.name * 1000}}</td>
-        <td>{{row.solo_elo}}</td>
+        <td>{{row.name}}</td>
+        <td>{{row.solo_elo * 1000}}</td>
     </tr>
     {%endfor%}
     </tbody>
@@ -33,8 +33,8 @@
     {% for row in player_team_elo_list %}
     <tr>
         <td>{{loop.index}}</td>
-        <td>{{row.name * 1000}}</td>
-        <td>{{row.team_elo}}</td>
+        <td>{{row.name}}</td>
+        <td>{{row.team_elo * 1000}}</td>
     </tr>
     {%endfor%}
     </tbody>
