@@ -4,7 +4,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 import rating
-from db_query import get_select_query_result, run_insert_query, get_cursor_and_connection
+from db_query import get_select_query_result, run_param_query, get_cursor_and_connection, fetch_one_query_result
 from model import Player, SoloGame, Team, TeamGame
 
 app = Flask(__name__)
@@ -98,7 +98,7 @@ def solo_games():
         JOIN players p_red
         ON sg.red = p_red.id
         ORDER BY sg.created_timestamp DESC
-        LIMIT 100
+        LIMIT 25
         """,
         cur=cur
     )
@@ -129,7 +129,7 @@ def team_games():
         JOIN players p_red_defender
         ON tg.red_defender = p_red_defender.id
         ORDER BY tg.created_timestamp DESC
-        LIMIT 5
+        LIMIT 25
         """,
         cur=cur
     )
@@ -145,7 +145,7 @@ def add_player():
     if request.method == 'POST':
         name = request.form['name']
         cur, con = get_cursor_and_connection()
-        run_insert_query("INSERT INTO players(name) VALUES (?)", (name,), cur=cur)
+        run_param_query("INSERT INTO players(name) VALUES (?)", (name,), cur=cur)
         con.commit()
         flash('User Added', 'success')
         return redirect(url_for("players"))
@@ -155,7 +155,6 @@ def add_player():
 @app.route("/register_solo_game", methods=['GET', 'POST'])
 def register_solo_game():
     if request.method == 'POST':
-        print(f"GOT {request.form}")
         return add_solo_game_result(request)
 
     player_list = get_select_query_result("SELECT id, name FROM players")
@@ -276,6 +275,38 @@ def _validate_team_game_parameters(game: TeamGame):
         }
     ) == 4, "Players need to be distinct"
     assert game.blue_score != game.red_score, "Ties are not allowed"
+
+
+@app.route("/delete_last_solo_game", methods=['DELETE'])
+def delete_last_solo_game():
+
+    if request.method == 'DELETE':
+        cur, conn = get_cursor_and_connection()
+        game_to_delete = fetch_one_query_result("SELECT id FROM solo_game ORDER BY updated_timestamp DESC LIMIT 1", cur=cur)
+        if game_to_delete:
+            game_id_to_delete = game_to_delete[0]
+
+            run_param_query("DELETE FROM solo_game WHERE id=?", (game_id_to_delete,), cur=cur)
+            run_param_query("DELETE FROM solo_ranking WHERE game_id=?", (game_id_to_delete,), cur=cur)
+
+            conn.commit()
+    return redirect(url_for("index"))
+
+
+@app.route("/delete_last_team_game", methods=['DELETE'])
+def delete_last_team_game():
+
+    if request.method == 'DELETE':
+        cur, conn = get_cursor_and_connection()
+        game_to_delete = fetch_one_query_result("SELECT id FROM team_game ORDER BY updated_timestamp DESC LIMIT 1", cur=cur)
+        if game_to_delete:
+            game_id_to_delete = game_to_delete[0]
+
+            run_param_query("DELETE FROM team_game WHERE id=?", (game_id_to_delete,), cur=cur)
+            run_param_query("DELETE FROM team_ranking WHERE game_id=?", (game_id_to_delete,), cur=cur)
+
+            conn.commit()
+    return redirect(url_for("index"))
 
 
 if __name__ == '__main__':

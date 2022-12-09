@@ -25,13 +25,13 @@ def get_select_query_result(sql_statement: str, params: Tuple[Any] = (), cur: Op
     return cur.fetchall()
 
 
-def run_insert_query(sql_statement: str, params: Tuple = (), cur: Optional[sqlite3.Cursor] = None) -> None:
+def run_param_query(sql_statement: str, params: Tuple = (), cur: Optional[sqlite3.Cursor] = None) -> None:
     if cur is None:
         cur, _ = get_cursor_and_connection()
     cur.execute(sql_statement, params)
 
 
-def run_many_insert_query(sql_statement: str, params: List[Tuple] = (), cur: Optional[sqlite3.Cursor] = None) -> None:
+def run_many_param_query(sql_statement: str, params: List[Tuple] = (), cur: Optional[sqlite3.Cursor] = None) -> None:
     if cur is None:
         cur, _ = get_cursor_and_connection()
     cur.executemany(sql_statement, params)

@@ -14,7 +14,7 @@
     <tr>
         <td>{{loop.index}}</td>
         <td>{{row.name}}</td>
-        <td>{{row.solo_elo}}</td>
+        <td>{{row.solo_elo * 1000}}</td>
     </tr>
     {%endfor%}
     </tbody>
@@ -34,7 +34,7 @@
     <tr>
         <td>{{loop.index}}</td>
         <td>{{row.name}}</td>
-        <td>{{row.team_elo}}</td>
+        <td>{{row.team_elo * 1000}}</td>
     </tr>
     {%endfor%}
     </tbody>

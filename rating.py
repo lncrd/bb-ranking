@@ -10,8 +10,6 @@ def update_solo_rating(winner: Player, loser: Player) -> None:
 
 
 def update_team_rating(winner: Team, loser: Team) -> None:
-    print(f"GOT WINNERS: {winner}")
-    print(f"GOT LOSERS: {loser}")
     (new_winner_attacker_rating, new_winner_defender_rating), (new_loser_attacker_rating, new_loser_defender_rating) = rate(
         [
             [winner.attacker.team_rating, winner.defender.team_rating],

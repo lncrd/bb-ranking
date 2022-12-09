@@ -4,7 +4,7 @@ from typing import Optional, Union
 
 from trueskill import Rating
 
-from db_query import fetch_one_query_result, run_insert_query, run_many_insert_query
+from db_query import fetch_one_query_result, run_param_query, run_many_param_query
 
 
 @dataclass
@@ -75,7 +75,7 @@ class SoloGame(Game):
     red: Player
 
     def insert_game_into_db(self, cur: sqlite3.Cursor) -> None:
-        run_insert_query(
+        run_param_query(
             """
             INSERT INTO solo_game(blue, red, blue_score, red_score, went_under)
             VALUES (?,?,?,?,?)
@@ -86,7 +86,7 @@ class SoloGame(Game):
         self.id = cur.lastrowid
 
     def insert_rating_into_db(self, cur: sqlite3.Cursor) -> None:
-        run_many_insert_query(
+        run_many_param_query(
             """
             INSERT INTO solo_ranking (player_id, mu, sigma, game_id)
             VALUES (?, ?, ?, ?)
@@ -105,7 +105,7 @@ class TeamGame(Game):
     red: Team
 
     def insert_game_into_db(self, cur: sqlite3.Cursor) -> None:
-        run_insert_query(
+        run_param_query(
             """
             INSERT INTO team_game(
                 blue_attacker,
@@ -132,8 +132,7 @@ class TeamGame(Game):
         self.id = cur.lastrowid
 
     def insert_rating_into_db(self, cur: sqlite3.Cursor) -> None:
-        print(f"INSERTING RATINGS FOR {self}")
-        run_many_insert_query(
+        run_many_param_query(
             """
             INSERT INTO team_ranking (player_id, mu, sigma, game_id)
             VALUES (?, ?, ?, ?)
