@@ -290,6 +290,7 @@ def delete_last_solo_game():
             run_param_query("DELETE FROM solo_ranking WHERE game_id=?", (game_id_to_delete,), cur=cur)
 
             conn.commit()
+    return redirect(url_for("index"))
 
 
 @app.route("/delete_last_team_game", methods=['DELETE'])
@@ -305,6 +306,7 @@ def delete_last_team_game():
             run_param_query("DELETE FROM team_ranking WHERE game_id=?", (game_id_to_delete,), cur=cur)
 
             conn.commit()
+    return redirect(url_for("index"))
 
 
 if __name__ == '__main__':
