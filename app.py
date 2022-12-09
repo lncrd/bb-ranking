@@ -277,7 +277,7 @@ def _validate_team_game_parameters(game: TeamGame):
     assert game.blue_score != game.red_score, "Ties are not allowed"
 
 
-@app.route("/delete_last_solo_game")
+@app.route("/delete_last_solo_game", methods=['DELETE'])
 def delete_last_solo_game():
 
     if request.method == 'DELETE':
@@ -292,7 +292,7 @@ def delete_last_solo_game():
             conn.commit()
 
 
-@app.route("/delete_last_team_game")
+@app.route("/delete_last_team_game", methods=['DELETE'])
 def delete_last_team_game():
 
     if request.method == 'DELETE':
